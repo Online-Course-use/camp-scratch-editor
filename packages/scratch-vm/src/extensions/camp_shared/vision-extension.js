@@ -242,7 +242,7 @@ class CampVisionExtension {
         const name = this.constructor.ITEM_NAME;
         const boxes = this.detections.map((item, i) => {
             let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
-            for (const p of item.keypoints || []) {
+            for (const p of this._boxPoints(item)) {
                 const [x, y] = this._toStage(p, item.space);
                 if (x < x1) x1 = x;
                 if (x > x2) x2 = x;
@@ -252,6 +252,11 @@ class CampVisionExtension {
             return {x1, y1, x2, y2, label: `第 ${i + 1} ${name}`};
         }).filter(b => Number.isFinite(b.x1));
         this._overlay.draw(boxes);
+    }
+
+    /** 偵測框要包住哪些點；子類別可以排除不可靠的點（例如姿態網路的低信心點）。 */
+    _boxPoints (item) {
+        return item.keypoints || [];
     }
 
     // ------------------------------------------------------------ 座標

@@ -1,13 +1,14 @@
 /* eslint-disable */
 // 營隊自己撰寫的程式（2026-11），格式與註解風格不套用上游的 lint 規則。
 /**
- * AI 擴展的「延遲載入」與「模型自架」（臉部網格、手部姿勢共用）。
+ * AI 擴展的「延遲載入」與「模型自架」（臉部網格、手部姿勢、姿態網路共用）。
  *
  * - ml5 不打包進編輯器主程式（整包約 3.3 MB）。學員加入這個擴展時，才從本網域的
  *   /vendor/ 用 <script> 載入。
- * - ml5 0.12.2 把模型網址寫死為 tfhub.dev，也沒有提供改網址的選項。編輯器的安全標頭不允許
- *   連到那裡，所以在「載入模型的這段時間」把這兩個固定網址改導到本網域的 /models/，
- *   載入完成就還原，不影響頁面上其他的網路請求。
+ * - ml5 0.12.2 把模型網址寫死（多數在 tfhub.dev，PoseNet 在 storage.googleapis.com），也沒有提供改網址的選項。
+ *   編輯器的安全標頭不允許連到 tfhub；storage.googleapis.com 雖然為了 Teachable Machine 開放，模型仍一律自架。
+ *   所以在「載入模型的這段時間」把這些固定網址改導到本網域的 /models/，載入完成就還原，
+ *   不影響頁面上其他的網路請求。
  *
  * 檔案由 packages/camp-host/scripts/mirror-models.mjs 準備（含雜湊核對）。
  */
@@ -17,7 +18,8 @@ const MODEL_ROUTES = [
     ['https://tfhub.dev/mediapipe/tfjs-model/facemesh/1/default/1/', '/models/facemesh/'],
     ['https://tfhub.dev/tensorflow/tfjs-model/blazeface/1/default/1/', '/models/blazeface/'],
     ['https://tfhub.dev/mediapipe/tfjs-model/handdetector/1/default/1/', '/models/handdetector/'],
-    ['https://tfhub.dev/mediapipe/tfjs-model/handskeleton/1/default/1/', '/models/handskeleton/']
+    ['https://tfhub.dev/mediapipe/tfjs-model/handskeleton/1/default/1/', '/models/handskeleton/'],
+    ['https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/quant2/075/', '/models/posenet/']
 ];
 
 /**

@@ -10,6 +10,9 @@ import facemesh2scratchInsetIconURL from './facemesh2scratch/facemesh2scratch-sm
 import handpose2scratchIconURL from './handpose2scratch/handpose2scratch.png';
 import handpose2scratchInsetIconURL from './handpose2scratch/handpose2scratch-small.png';
 
+import posenet2scratchIconURL from './posenet2scratch/posenet2scratch.png';
+import posenet2scratchInsetIconURL from './posenet2scratch/posenet2scratch-small.png';
+
 import musicIconURL from './music/music.png';
 import musicInsetIconURL from './music/music-small.svg';
 
@@ -106,6 +109,24 @@ export default [
                 defaultMessage="用攝影機偵測手腕與手指的 21 個點，讓角色跟著你的手指移動。一次偵測一隻手；攝影機畫面只在這台電腦上處理，不會上傳。"
                 description="Description of the hand pose extension"
                 id="gui.extension.handpose2scratch.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: false,
+        bluetoothRequired: false
+    },
+    {
+        name: '姿態網路',
+        extensionId: 'posenet2scratch',
+        collaborator: 'champierre（營隊學習平台修改）',
+        iconURL: posenet2scratchIconURL,
+        insetIconURL: posenet2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="用攝影機偵測身體的 17 個部位（鼻子、肩膀、手腕、膝蓋…），可以同時偵測多個人，做體感遊戲。攝影機畫面只在這台電腦上處理，不會上傳。"
+                description="Description of the pose estimation extension"
+                id="gui.extension.posenet2scratch.description"
             />
         ),
         featured: true,

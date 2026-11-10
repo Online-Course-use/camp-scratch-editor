@@ -17,8 +17,9 @@
 | Arduino Uno | `packages/scratch-vm/src/extensions/scratch3_camparduino/` | **營隊自行撰寫**（AGPL-3.0）。以 WebSerial 實作 Firmata 協定的最小子集與 STK500v1 燒錄；協定規格見 https://github.com/firmata/protocol 與 Atmel AVR061 |
 | 臉部網格 | `packages/scratch-vm/src/extensions/scratch3_facemesh2scratch/` | 改寫自 [champierre/facemesh2scratch](https://github.com/champierre/facemesh2scratch)（AGPL-3.0）。**營隊於 2026-11 修改**：函式庫改為延遲載入、模型改由本網域提供、移除 `alert()`、沒有臉時清空資料、新增繁體中文（修改內容列於 `index.js` 檔頭）。視覺類擴展共用的 `packages/scratch-vm/src/extensions/camp_shared/`（`loader.js` 延遲載入與模型改導、`vision.js` 選擇攝影機／偵測框／舞台截圖、`vision-extension.js` 共用基底）為營隊自行撰寫（AGPL-3.0）；依 SPEC 7.7 新增的積木（具名特徵點、距離／角度等）亦為營隊撰寫。執行時使用 ml5.js 0.12.2（MIT）與其內含的 TensorFlow.js（Apache-2.0），見下方「AI 模型與函式庫」 |
 | 手部姿勢 | `packages/scratch-vm/src/extensions/scratch3_handpose2scratch/` | 改寫自 [champierre/handpose2scratch](https://github.com/champierre/handpose2scratch)（AGPL-3.0，commit `8d70fa3e`，2025-10-01）；清單卡片圖示取自同一倉庫。**營隊於 2026-11 修改**：改用上述共用基底（延遲載入、模型自架、不用 `alert()`）、手離開畫面時清空資料、依 SPEC 7.7.2 調整積木、新增繁體中文。執行時使用 ml5.js 0.12.2 內含的 handpose（Apache-2.0） |
+| 姿態網路 | `packages/scratch-vm/src/extensions/scratch3_posenet2scratch/` | 改寫自 [champierre/posenet2scratch](https://github.com/champierre/posenet2scratch)（AGPL-3.0，commit `94f396d7`，2025-05-03）；清單卡片圖示取自同一倉庫。**營隊於 2026-11 修改**：改用共用基底（延遲載入、模型自架、不用 `alert()`、沒有人時清空）、依 SPEC 7.7.3 調整積木（34 個專用積木改為具名選單，原積木保留不顯示）、不再改動共用影像元素的大小、新增繁體中文。執行時使用 ml5.js 0.12.2 內含的 PoseNet（Apache-2.0） |
 
-> 其餘擴展（姿態網路、影像訓練器、語音辨識、Teachable Machine）加入時在此逐項補上：名稱、來源倉庫、鎖定的 commit、授權。
+> 其餘擴展（影像訓練器、語音辨識、Teachable Machine）加入時在此逐項補上：名稱、來源倉庫、鎖定的 commit、授權。
 
 ## 隨附的預編譯韌體
 
@@ -38,6 +39,7 @@
 | `public/models/blazeface/` | Apache-2.0（BlazeFace，Google） | `https://tfhub.dev/tensorflow/tfjs-model/blazeface/1/default/1`，未修改 |
 | `public/models/handdetector/` | Apache-2.0（MediaPipe Hands 手掌偵測，Google） | `https://tfhub.dev/mediapipe/tfjs-model/handdetector/1/default/1`，未修改 |
 | `public/models/handskeleton/` | Apache-2.0（MediaPipe Hands 手部骨架，Google） | `https://tfhub.dev/mediapipe/tfjs-model/handskeleton/1/default/1`（含 `anchors.json`），未修改 |
+| `public/models/posenet/` | Apache-2.0（PoseNet，Google） | `https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/quant2/075/`（MobileNetV1、0.75、stride 16），未修改 |
 
 ## 第三方元件
 

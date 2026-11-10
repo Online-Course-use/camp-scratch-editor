@@ -15,7 +15,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pub = join(root, "public");
 const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 
-/** 從 tfhub 下載的 TensorFlow.js 模型。網址結尾要加 ?tfjs-format=file 才會拿到檔案本身。 */
+/** TensorFlow.js 模型（tfhub 或 Google Cloud Storage）。tfhub 的網址結尾要加 ?tfjs-format=file 才會拿到檔案本身；GCS 會忽略這個參數。 */
 const TFHUB_MODELS = [
   {
     dir: "models/facemesh",
@@ -50,6 +50,15 @@ const TFHUB_MODELS = [
       "group1-shard1of2.bin": "f7d29046066feecd4691c5b23f0ecaad46880ab17db861bada6aad7a9abc22dc",
       "group1-shard2of2.bin": "f5bde06bf1c292edf605f4c29549aadb1f0c750f0cc1d0a360ba584b07adb84d",
       "anchors.json": "2313768e67c799cbd715ebc18ceef32e87786f1e6ee5df9dab352bb82147ee83",
+    },
+  },
+  {
+    // ml5 PoseNet 的預設：MobileNetV1、multiplier 0.75、quantBytes 2、outputStride 16
+    dir: "models/posenet",
+    source: "https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/quant2/075",
+    files: {
+      "model-stride16.json": "38b860de18e6e48ff274477c2b7207ade6f24fa0ca5509319fa01458ca5884d7",
+      "group1-shard1of1.bin": "fa9f00dab1468f722f497c06f5c29f60ee3ad9eb1fa81499d0eb16d99290cbd8",
     },
   },
 ];
