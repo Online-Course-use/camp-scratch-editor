@@ -1,6 +1,9 @@
 import React from 'react';
 import {FormattedMessage} from 'react-intl';
 
+import facemesh2scratchIconURL from './facemesh2scratch/facemesh2scratch.png';
+import facemesh2scratchInsetIconURL from './facemesh2scratch/facemesh2scratch-small.png';
+
 import musicIconURL from './music/music.png';
 import musicInsetIconURL from './music/music-small.svg';
 
@@ -50,6 +53,42 @@ import faceSensingIconURL from './faceSensing/faceSensing.png';
 import faceSensingInsetIconURL from './faceSensing/faceSensing-small.svg';
 
 export default [
+    {
+        name: 'M0 Arduino (Firmata)',
+        extensionId: 'm0arduino',
+        collaborator: 'M0 實驗',
+        iconURL: facemesh2scratchIconURL,
+        insetIconURL: facemesh2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="M0 experiment: Arduino over WebSerial (StandardFirmata)"
+                description="M0 experiment"
+                id="gui.extension.m0arduino.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: false,
+        bluetoothRequired: false
+    },
+    {
+        name: 'Facemesh2Scratch',
+        extensionId: 'facemesh2scratch',
+        collaborator: 'champierre',
+        iconURL: facemesh2scratchIconURL,
+        insetIconURL: facemesh2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Face Tracking"
+                description="Face Tracking"
+                id="gui.extension.facemesh2scratch.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false
+    },
     {
         name: (
             <FormattedMessage
