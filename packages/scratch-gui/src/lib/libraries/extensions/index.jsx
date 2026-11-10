@@ -7,6 +7,9 @@ import camparduinoInsetIconURL from './camparduino/camparduino-small.svg';
 import facemesh2scratchIconURL from './facemesh2scratch/facemesh2scratch.png';
 import facemesh2scratchInsetIconURL from './facemesh2scratch/facemesh2scratch-small.png';
 
+import handpose2scratchIconURL from './handpose2scratch/handpose2scratch.png';
+import handpose2scratchInsetIconURL from './handpose2scratch/handpose2scratch-small.png';
+
 import musicIconURL from './music/music.png';
 import musicInsetIconURL from './music/music-small.svg';
 
@@ -85,6 +88,24 @@ export default [
                 defaultMessage="用攝影機偵測臉上的 468 個特徵點，讓角色跟著你的臉移動。攝影機畫面只在這台電腦上處理，不會上傳。"
                 description="Description of the face mesh extension"
                 id="gui.extension.facemesh2scratch.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: false,
+        bluetoothRequired: false
+    },
+    {
+        name: '手部姿勢',
+        extensionId: 'handpose2scratch',
+        collaborator: 'champierre（營隊學習平台修改）',
+        iconURL: handpose2scratchIconURL,
+        insetIconURL: handpose2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="用攝影機偵測手腕與手指的 21 個點，讓角色跟著你的手指移動。一次偵測一隻手；攝影機畫面只在這台電腦上處理，不會上傳。"
+                description="Description of the hand pose extension"
+                id="gui.extension.handpose2scratch.description"
             />
         ),
         featured: true,

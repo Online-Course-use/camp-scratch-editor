@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const {test} = require('tap');
 
-const loader = require('../../src/extensions/scratch3_facemesh2scratch/loader');
+const loader = require('../../src/extensions/camp_shared/loader');
 const Facemesh = require('../../src/extensions/scratch3_facemesh2scratch');
 
 const SRC_DIR = path.join(__dirname, '../../src/extensions/scratch3_facemesh2scratch');
@@ -99,7 +99,13 @@ test('模型網址改導到本網域', t => {
         loader.localModelUrl('https://tfhub.dev/tensorflow/tfjs-model/blazeface/1/default/1/group1-shard1of1.bin?tfjs-format=file'),
         '/models/blazeface/group1-shard1of1.bin'
     );
-    t.equal(loader.localModelUrl('https://tfhub.dev/mediapipe/tfjs-model/handskeleton/1/default/1/model.json'), null, '沒有自架的模型不改導');
+    t.equal(
+        loader.localModelUrl('https://tfhub.dev/mediapipe/tfjs-model/handskeleton/1/default/1/anchors.json?tfjs-format=file'),
+        '/models/handskeleton/anchors.json',
+        '手部模型的 anchors.json 也改導'
+    );
+    t.equal(loader.localModelUrl('https://tfhub.dev/mediapipe/tfjs-model/handdetector/1/default/1/model.json'), '/models/handdetector/model.json');
+    t.equal(loader.localModelUrl('https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/model.json'), null, '沒有自架的模型不改導');
     t.equal(loader.localModelUrl('https://example.com/model.json'), null);
     t.equal(loader.localModelUrl('https://tfhub.dev/mediapipe/tfjs-model/facemesh/1/default/1/../../secret'), null, '不接受含路徑的檔名');
     t.equal(loader.localModelUrl(undefined), null);

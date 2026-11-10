@@ -1,7 +1,7 @@
 /* eslint-disable */
 // 營隊自己撰寫的程式（2026-11），格式與註解風格不套用上游的 lint 規則。
 /**
- * 臉部網格的「延遲載入」與「模型自架」。
+ * AI 擴展的「延遲載入」與「模型自架」（臉部網格、手部姿勢共用）。
  *
  * - ml5 不打包進編輯器主程式（整包約 3.3 MB）。學員加入這個擴展時，才從本網域的
  *   /vendor/ 用 <script> 載入。
@@ -15,7 +15,9 @@ const ML5_URL = '/vendor/ml5-0.12.2.min.js';
 
 const MODEL_ROUTES = [
     ['https://tfhub.dev/mediapipe/tfjs-model/facemesh/1/default/1/', '/models/facemesh/'],
-    ['https://tfhub.dev/tensorflow/tfjs-model/blazeface/1/default/1/', '/models/blazeface/']
+    ['https://tfhub.dev/tensorflow/tfjs-model/blazeface/1/default/1/', '/models/blazeface/'],
+    ['https://tfhub.dev/mediapipe/tfjs-model/handdetector/1/default/1/', '/models/handdetector/'],
+    ['https://tfhub.dev/mediapipe/tfjs-model/handskeleton/1/default/1/', '/models/handskeleton/']
 ];
 
 /**

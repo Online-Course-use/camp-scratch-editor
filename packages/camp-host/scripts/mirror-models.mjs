@@ -33,6 +33,25 @@ const TFHUB_MODELS = [
       "group1-shard1of1.bin": "60b481ab6c19352673cdb21e02e639f90883db1393ac52d07c7ea4e1e11cb2cd",
     },
   },
+  {
+    dir: "models/handdetector",
+    source: "https://tfhub.dev/mediapipe/tfjs-model/handdetector/1/default/1",
+    files: {
+      "model.json": "f1a675f1832f3054e4698e34b8c42e4794b1154f351f17789e03bd72350e9407",
+      "group1-shard1of2.bin": "007a65e43836907709b136066443f279d336f13a530965a2005eb7eb79f30f4a",
+      "group1-shard2of2.bin": "0fc96525c4e7a3596d088ac3a6e9324f8f38691b27515f118411de593802cc7d",
+    },
+  },
+  {
+    dir: "models/handskeleton",
+    source: "https://tfhub.dev/mediapipe/tfjs-model/handskeleton/1/default/1",
+    files: {
+      "model.json": "759a0bc18afbbcc6deeecb3025b917ba07c6793ef223842abd87b0977d8a3e4b",
+      "group1-shard1of2.bin": "f7d29046066feecd4691c5b23f0ecaad46880ab17db861bada6aad7a9abc22dc",
+      "group1-shard2of2.bin": "f5bde06bf1c292edf605f4c29549aadb1f0c750f0cc1d0a360ba584b07adb84d",
+      "anchors.json": "2313768e67c799cbd715ebc18ceef32e87786f1e6ee5df9dab352bb82147ee83",
+    },
+  },
 ];
 
 /** 從同一個倉庫已安裝的 npm 套件複製的函式庫（版本由根目錄的 package-lock.json 鎖定）。 */

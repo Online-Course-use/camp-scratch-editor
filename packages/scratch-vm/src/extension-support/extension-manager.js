@@ -15,6 +15,7 @@ const builtinExtensions = {
     // These are the non-core built-in extensions.
     pen: () => require('../extensions/scratch3_pen'),
     facemesh2scratch: () => require('../extensions/scratch3_facemesh2scratch'),
+    handpose2scratch: () => require('../extensions/scratch3_handpose2scratch'),
     camparduino: () => require('../extensions/scratch3_camparduino'),
     wedo2: () => require('../extensions/scratch3_wedo2'),
     music: () => require('../extensions/scratch3_music'),
