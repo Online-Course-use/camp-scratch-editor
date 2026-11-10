@@ -1,6 +1,9 @@
 import React from 'react';
 import {FormattedMessage} from 'react-intl';
 
+import camparduinoIconURL from './camparduino/camparduino.svg';
+import camparduinoInsetIconURL from './camparduino/camparduino-small.svg';
+
 import facemesh2scratchIconURL from './facemesh2scratch/facemesh2scratch.png';
 import facemesh2scratchInsetIconURL from './facemesh2scratch/facemesh2scratch-small.png';
 
@@ -54,16 +57,16 @@ import faceSensingInsetIconURL from './faceSensing/faceSensing-small.svg';
 
 export default [
     {
-        name: 'M0 Arduino (Firmata)',
-        extensionId: 'm0arduino',
-        collaborator: 'M0 實驗',
-        iconURL: facemesh2scratchIconURL,
-        insetIconURL: facemesh2scratchInsetIconURL,
+        name: 'Arduino Uno',
+        extensionId: 'camparduino',
+        collaborator: '營隊學習平台',
+        iconURL: camparduinoIconURL,
+        insetIconURL: camparduinoInsetIconURL,
         description: (
             <FormattedMessage
-                defaultMessage="M0 experiment: Arduino over WebSerial (StandardFirmata)"
-                description="M0 experiment"
-                id="gui.extension.m0arduino.description"
+                defaultMessage="用 USB 連接 Arduino Uno，控制 LED、蜂鳴器、伺服馬達，讀取按鈕與感測器。第一次使用請先點「燒錄 Firmata 韌體」。"
+                description="Description of the Arduino Uno extension"
+                id="gui.extension.camparduino.description"
             />
         ),
         featured: true,
