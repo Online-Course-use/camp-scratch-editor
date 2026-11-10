@@ -75,21 +75,21 @@ export default [
         bluetoothRequired: false
     },
     {
-        name: 'Facemesh2Scratch',
+        name: '臉部網格',
         extensionId: 'facemesh2scratch',
-        collaborator: 'champierre',
+        collaborator: 'champierre（營隊學習平台修改）',
         iconURL: facemesh2scratchIconURL,
         insetIconURL: facemesh2scratchInsetIconURL,
         description: (
             <FormattedMessage
-                defaultMessage="Face Tracking"
-                description="Face Tracking"
+                defaultMessage="用攝影機偵測臉上的 468 個特徵點，讓角色跟著你的臉移動。攝影機畫面只在這台電腦上處理，不會上傳。"
+                description="Description of the face mesh extension"
                 id="gui.extension.facemesh2scratch.description"
             />
         ),
         featured: true,
         disabled: false,
-        internetConnectionRequired: true,
+        internetConnectionRequired: false,
         bluetoothRequired: false
     },
     {

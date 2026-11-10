@@ -10,3 +10,5 @@ public/extension-worker.js*
 .env
 .env.local
 harness/.env.local
+public/models/
+public/vendor/

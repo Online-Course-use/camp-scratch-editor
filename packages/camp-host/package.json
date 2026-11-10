@@ -12,7 +12,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "prebuild": "node scripts/copy-gui.mjs",
-    "mirror-assets": "node scripts/mirror-library-assets.mjs"
+    "mirror-assets": "node scripts/mirror-library-assets.mjs",
+    "mirror-models": "node scripts/mirror-models.mjs"
   },
   "dependencies": {
     "jose": "6.2.12"

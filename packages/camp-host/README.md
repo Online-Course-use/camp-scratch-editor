@@ -29,8 +29,11 @@ npm run prepare --workspace @scratch/scratch-gui      # 下載 micro:bit 的 hex
 # 外殼（獨立的 npm 專案，不在根目錄的 workspaces 裡）
 cd packages/camp-host
 npm install
+npm run mirror-models    # 下載 AI 模型、複製 ml5 到 public/models、public/vendor（需要網路；會核對雜湊，可重複執行）
 npm run build            # prebuild 會把 ../scratch-gui/dist 複製到 public/，再由 Vite 輸出到 dist/
 ```
+
+AI 擴展的函式庫（ml5）與模型**不打包進 scratch-gui**：學員加入擴展時才從本網域的 `/vendor/`、`/models/` 載入，所以沒用到 AI 擴展的學員不會多下載。少了 `mirror-models` 這一步，擴展會顯示「臉部辨識無法啟動」。
 
 ⚠️ 踩過的雷：不要用 `npm install <套件> --workspace …` 單獨安裝（會把已提升的相依套件修剪掉）；不要同時跑兩個 `npm install`。
 

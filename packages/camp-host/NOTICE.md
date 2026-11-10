@@ -15,7 +15,7 @@
 | 擴展 | 位置 | 來源與授權 |
 |---|---|---|
 | Arduino Uno | `packages/scratch-vm/src/extensions/scratch3_camparduino/` | **營隊自行撰寫**（AGPL-3.0）。以 WebSerial 實作 Firmata 協定的最小子集與 STK500v1 燒錄；協定規格見 https://github.com/firmata/protocol 與 Atmel AVR061 |
-| 臉部網格 | `packages/scratch-vm/src/extensions/scratch3_facemesh2scratch/` | 改寫自 [champierre/facemesh2scratch](https://github.com/champierre/facemesh2scratch)（AGPL-3.0，M0 讀過的 commit 見 `M0-驗證報告.md`）。依賴 ml5.js 0.12.2（MIT）、TensorFlow.js（Apache-2.0） |
+| 臉部網格 | `packages/scratch-vm/src/extensions/scratch3_facemesh2scratch/` | 改寫自 [champierre/facemesh2scratch](https://github.com/champierre/facemesh2scratch)（AGPL-3.0）。**營隊於 2026-11 修改**：函式庫改為延遲載入、模型改由本網域提供、移除 `alert()`、沒有臉時清空資料、新增繁體中文（修改內容列於 `index.js` 檔頭）。`loader.js` 為營隊自行撰寫。執行時使用 ml5.js 0.12.2（MIT）與其內含的 TensorFlow.js（Apache-2.0），見下方「AI 模型與函式庫」 |
 
 > 其餘擴展（手部姿勢、姿態網路、影像訓練器、語音辨識、Teachable Machine）加入時在此逐項補上：名稱、來源倉庫、鎖定的 commit、授權。
 
@@ -25,6 +25,16 @@
 |---|---|---|
 | `public/firmware/StandardFirmata-2.5.9-uno.hex` | **GNU LGPL-2.1-or-later**（Firmata 函式庫）、Arduino AVR 核心（LGPL-2.1） | 以 Arduino IDE 2 的範例 *Firmata → StandardFirmata* 編譯（Firmata 函式庫 **2.5.9**、`arduino:avr:uno`、AVR core 1.8.8），**未修改原始碼**。原始碼：https://github.com/firmata/arduino （tag `2.5.9`）。LGPL 要求：使用者可以取得函式庫原始碼並自行重新編譯替換——上述連結即為取得方式；Firmata 函式庫的授權全文見該倉庫的 `LICENSE.txt` |
 | SHA-256 | `public/firmware/StandardFirmata-2.5.9-uno.hex.sha256` | 擴展載入韌體前會核對此雜湊 |
+
+## AI 模型與函式庫（執行時由本網域提供）
+
+以下檔案**不納入版控**，由 `scripts/mirror-models.mjs`（`npm run mirror-models`）在建置前準備，並逐一核對 SHA-256（雜湊值寫在該腳本內）。編輯器執行時只從本網域讀取，不連到原始來源。
+
+| 檔案 | 授權 | 來源 |
+|---|---|---|
+| `public/vendor/ml5-0.12.2.min.js` | MIT（ml5.js）；內含 TensorFlow.js 與 tfjs-models（Apache-2.0）等，其授權聲明保留於檔案內 | npm 套件 `ml5@0.12.2` 的 `dist/ml5.min.js`，**未修改**。原始碼：https://github.com/ml5js/ml5-library （tag `v0.12.2`） |
+| `public/models/facemesh/` | Apache-2.0（MediaPipe Face Mesh，Google） | `https://tfhub.dev/mediapipe/tfjs-model/facemesh/1/default/1`，未修改 |
+| `public/models/blazeface/` | Apache-2.0（BlazeFace，Google） | `https://tfhub.dev/tensorflow/tfjs-model/blazeface/1/default/1`，未修改 |
 
 ## 第三方元件
 
