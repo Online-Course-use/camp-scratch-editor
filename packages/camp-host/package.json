@@ -1,0 +1,27 @@
+{
+  "name": "camp-host",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "harness": "vite --config harness/vite.config.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prebuild": "node scripts/copy-gui.mjs",
+    "mirror-assets": "node scripts/mirror-library-assets.mjs"
+  },
+  "dependencies": {
+    "jose": "6.2.12"
+  },
+  "devDependencies": {
+    "jsdom": "29.1.1",
+    "typescript": "5.9.3",
+    "vite": "8.3.0",
+    "vitest": "5.0.1"
+  },
+  "description": "營隊編輯器外殼：被營隊網站以 iframe 嵌入，負責 postMessage 通訊與嵌入權杖驗證"
+}
