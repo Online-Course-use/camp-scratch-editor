@@ -15,7 +15,7 @@
 | 擴展 | 位置 | 來源與授權 |
 |---|---|---|
 | Arduino Uno | `packages/scratch-vm/src/extensions/scratch3_camparduino/` | **營隊自行撰寫**（AGPL-3.0）。以 WebSerial 實作 Firmata 協定的最小子集與 STK500v1 燒錄；協定規格見 https://github.com/firmata/protocol 與 Atmel AVR061 |
-| 臉部網格 | `packages/scratch-vm/src/extensions/scratch3_facemesh2scratch/` | 改寫自 [champierre/facemesh2scratch](https://github.com/champierre/facemesh2scratch)（AGPL-3.0）。**營隊於 2026-11 修改**：函式庫改為延遲載入、模型改由本網域提供、移除 `alert()`、沒有臉時清空資料、新增繁體中文（修改內容列於 `index.js` 檔頭）。`loader.js` 為營隊自行撰寫。執行時使用 ml5.js 0.12.2（MIT）與其內含的 TensorFlow.js（Apache-2.0），見下方「AI 模型與函式庫」 |
+| 臉部網格 | `packages/scratch-vm/src/extensions/scratch3_facemesh2scratch/` | 改寫自 [champierre/facemesh2scratch](https://github.com/champierre/facemesh2scratch)（AGPL-3.0）。**營隊於 2026-11 修改**：函式庫改為延遲載入、模型改由本網域提供、移除 `alert()`、沒有臉時清空資料、新增繁體中文（修改內容列於 `index.js` 檔頭）。`loader.js` 與視覺類擴展共用的 `packages/scratch-vm/src/extensions/camp_shared/vision.js`（選擇攝影機、偵測框、舞台截圖）為營隊自行撰寫（AGPL-3.0）；依 SPEC 7.7 新增的積木（具名特徵點、距離／角度等）亦為營隊撰寫。執行時使用 ml5.js 0.12.2（MIT）與其內含的 TensorFlow.js（Apache-2.0），見下方「AI 模型與函式庫」 |
 
 > 其餘擴展（手部姿勢、姿態網路、影像訓練器、語音辨識、Teachable Machine）加入時在此逐項補上：名稱、來源倉庫、鎖定的 commit、授權。
 
