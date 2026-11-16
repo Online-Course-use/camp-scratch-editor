@@ -30,6 +30,7 @@ npm run prepare --workspace @scratch/scratch-gui      # 下載 micro:bit 的 hex
 cd packages/camp-host
 npm install
 npm run mirror-models    # 下載 AI 模型、複製 ml5 到 public/models、public/vendor（需要網路；會核對雜湊，可重複執行）
+npm run mirror-assets    # 下載素材庫（角色、造型、背景、音效）到 public/library-assets（約 58 MB；少了這步，素材庫選了會載入失敗）
 npm run build            # prebuild 會把 ../scratch-gui/dist 複製到 public/，再由 Vite 輸出到 dist/
 ```
 

@@ -3,7 +3,7 @@
 // 為什麼不讓 Vite 重新打包 scratch-gui：上游的 webpack 產物把 publicPath 寫死為 "/"，
 // 執行期會從網站根目錄的 /chunks/、/static/ 載入延遲區塊與素材。原樣放在根目錄
 // 最不容易出錯，也讓「上游程式碼」與「本應用程式碼」在建置產物中清楚分開。
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,6 +17,19 @@ if (!existsSync(dist)) {
 }
 
 const noMaps = (src) => !src.endsWith(".map");
+
+// 不用 fs.cpSync：Node 24（實測 v24.14.1）在 Windows、路徑含中文時 cpSync 會讓整個行程崩潰
+// （0xC0000409，沒有錯誤訊息），而本專案資料夾名稱是中文。改用 copyFileSync 自己遞迴。
+function cpSync(src, dest, { recursive = false, filter = () => true } = {}) {
+  if (!recursive) return copyFileSync(src, dest);
+  mkdirSync(dest, { recursive: true });
+  for (const e of readdirSync(src, { withFileTypes: true })) {
+    const s = join(src, e.name);
+    if (!filter(s)) continue;
+    if (e.isDirectory()) cpSync(s, join(dest, e.name), { recursive, filter });
+    else copyFileSync(s, join(dest, e.name));
+  }
+}
 
 for (const dir of ["gui", "chunks", "static"]) rmSync(join(pub, dir), { recursive: true, force: true });
 mkdirSync(join(pub, "gui"), { recursive: true });

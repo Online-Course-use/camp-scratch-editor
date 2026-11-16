@@ -8,7 +8,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const libs = join(root, "node_modules", "@scratch", "scratch-gui", "dist", "libraries");
+// fork 之後 scratch-gui 在同一個倉庫（packages/scratch-gui），素材清單在它的原始碼裡
+const libs = join(root, "..", "scratch-gui", "src", "lib", "libraries");
 const out = join(root, "public", "library-assets");
 const SOURCE = "https://cdn.assets.scratch.mit.edu/internalapi/asset";
 const CONCURRENCY = 8;
