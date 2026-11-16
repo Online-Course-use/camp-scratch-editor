@@ -6,6 +6,8 @@ import {defineMessages, injectIntl} from 'react-intl';
 import intlShape from '../lib/intlShape.js';
 
 import extensionLibraryContent from '../lib/libraries/extensions/index.jsx';
+// 營隊應變：暫時隱藏的擴展只從清單拿掉，不影響已經用到它的作品（見 lib/camp-hidden-extensions.js）
+import campHiddenExtensions from '../lib/camp-hidden-extensions.js';
 
 import LibraryComponent from '../components/library/library.jsx';
 import extensionIcon from '../components/action-menu/icon--sprite.svg';
@@ -48,10 +50,12 @@ class ExtensionLibrary extends React.PureComponent {
         }
     }
     render () {
-        const extensionLibraryThumbnailData = extensionLibraryContent.map(extension => ({
-            rawURL: extension.iconURL || extensionIcon,
-            ...extension
-        }));
+        const extensionLibraryThumbnailData = extensionLibraryContent
+            .filter(extension => !campHiddenExtensions.includes(extension.extensionId))
+            .map(extension => ({
+                rawURL: extension.iconURL || extensionIcon,
+                ...extension
+            }));
         return (
             <LibraryComponent
                 data={extensionLibraryThumbnailData}
