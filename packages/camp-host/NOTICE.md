@@ -11,6 +11,7 @@
 | 擴展註冊與清單卡片 | `packages/scratch-vm/src/extension-support/extension-manager.js`、`packages/scratch-gui/src/lib/libraries/extensions/index.jsx` | 把營隊擴展加進官方「添加擴展」清單 |
 | 8×8 LED 矩陣欄位 | `packages/scratch-gui/src/lib/camp-matrix8.js`、`packages/scratch-gui/src/lib/blocks.js`、`packages/scratch-vm/src/extension-support/argument-type.js`、`packages/scratch-vm/src/engine/runtime.js` | Arduino「LED 矩陣顯示圖案」的點選格子。改寫自 scratch-blocks 2.1.19 的 `src/fields/field_matrix.ts`（5×5，Copyright 2016 Massachusetts Institute of Technology，Apache-2.0），營隊改為 8×8（2026-11-16） |
 | 舞台顯示器 id 修正 | `packages/scratch-vm/src/engine/runtime.js`、`packages/scratch-vm/src/serialization/sb3.js` | 修正上游的問題：擴展的回報積木在工具箱沒有固定 id，勾選顯示在舞台上後重新整理會重複、舊的關不掉。改為以 opcode 當 id，載入舊作品時合併重複的顯示器（2026-11-10） |
+| 8×8 矩陣積木存檔修正 | `packages/scratch-vm/src/serialization/sb3.js` | 營隊的 8×8 LED 矩陣 shadow 積木 `camp_matrix8` 會被當成擴展 `camp` 寫進作品、重新開啟時載入失敗；把 `camp` 列為非擴展前綴（2026-11-16） |
 
 ## 營隊擴展與其來源
 

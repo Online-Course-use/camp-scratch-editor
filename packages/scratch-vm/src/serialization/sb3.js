@@ -54,7 +54,10 @@ const CORE_EXTENSIONS = [
     'operator',
     'procedures',
     'sensing',
-    'sound'
+    'sound',
+    // 營隊修正（2026-11-16）：8×8 LED 矩陣的 shadow 積木 `camp_matrix8` 不是擴展。少了這一行，
+    // 存檔時會把 `camp` 當成擴展寫進作品，重新開啟時找不到這個擴展、整份作品載入失敗。
+    'camp'
 ];
 
 // Constants referring to 'primitive' blocks that are usually shadows,
