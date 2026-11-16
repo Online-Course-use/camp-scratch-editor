@@ -7,7 +7,7 @@ const {MODE, encode, FirmataParser} = require('../../src/extensions/scratch3_cam
 const stk500 = require('../../src/extensions/scratch3_camparduino/stk500');
 const Scratch3CampArduinoBlocks = require('../../src/extensions/scratch3_camparduino');
 
-const HEX_PATH = path.join(__dirname, '../../../camp-host/public/firmware/StandardFirmata-2.5.9-uno.hex');
+const HEX_PATH = path.join(__dirname, '../../../camp-host/public/firmware/CampFirmata-1.1.0-uno.hex');
 const hexText = () => fs.readFileSync(HEX_PATH, 'utf8');
 
 // ---------- 模擬 Uno 的 optiboot 開機載入程式 ----------
@@ -76,7 +76,7 @@ class SimBoard {
     }
 }
 
-test('Intel HEX：解析真正的 StandardFirmata，大小合理且每行檢查碼都對', t => {
+test('Intel HEX：解析真正的營隊韌體（CampFirmata），大小合理且每行檢查碼都對', t => {
     const image = stk500.parseIntelHex(hexText());
     t.ok(image.length > 10000 && image.length < stk500.UNO_MAX_BYTES, `韌體 ${image.length} bytes`);
     t.equal(image[0], 0x0C, '開頭是 AVR 的 jmp 指令（0x0C 0x94）');
@@ -100,7 +100,7 @@ test('Intel HEX：檢查碼錯誤、格式錯誤、缺結尾、過大、空檔�
     t.end();
 });
 
-test('STK500：對模擬的 Uno 燒錄真的 StandardFirmata，快閃記憶體內容與映像一致', async t => {
+test('STK500：對模擬的 Uno 燒錄真的營隊韌體，快閃記憶體內容與映像一致', async t => {
     const image = stk500.parseIntelHex(hexText());
     const board = new SimBoard();
     const progress = [];
@@ -290,11 +290,10 @@ test('積木：通訊失敗時回報中斷而不是丟錯', async t => {
     t.end();
 });
 
-test('擴展資訊：沒有音調積木（StandardFirmata 不支援），積木 id 不重複', t => {
+test('擴展資訊：積木 id 不重複（音調積木在營隊韌體加入後才有，見 extension_camparduino_parts.js）', t => {
     const info = new Scratch3CampArduinoBlocks({on () {}}).getInfo();
     const ops = info.blocks.filter(b => b !== '---').map(b => b.opcode);
     t.equal(new Set(ops).size, ops.length, '沒有重複的 opcode');
-    t.notOk(ops.some(o => /tone/i.test(o)));
     t.ok(ops.includes('flashFirmware') && ops.includes('pwmWrite') && ops.includes('servoSweep'));
     t.end();
 });

@@ -13,6 +13,14 @@ import handpose2scratchInsetIconURL from './handpose2scratch/handpose2scratch-sm
 import posenet2scratchIconURL from './posenet2scratch/posenet2scratch.png';
 import posenet2scratchInsetIconURL from './posenet2scratch/posenet2scratch-small.png';
 
+import ml2scratchIconURL from './ml2scratch/ml2scratch.png';
+import ml2scratchInsetIconURL from './ml2scratch/ml2scratch-small.png';
+
+import campspeechIconURL from './campspeech/campspeech.svg';
+import campspeechInsetIconURL from './campspeech/campspeech-small.svg';
+import tm2scratchIconURL from './tm2scratch/tm2scratch.png';
+import tmpose2scratchIconURL from './tmpose2scratch/tmpose2scratch.png';
+
 import musicIconURL from './music/music.png';
 import musicInsetIconURL from './music/music-small.svg';
 
@@ -132,6 +140,78 @@ export default [
         featured: true,
         disabled: false,
         internetConnectionRequired: false,
+        bluetoothRequired: false
+    },
+    {
+        name: '影像訓練器',
+        extensionId: 'ml2scratch',
+        collaborator: 'champierre（營隊學習平台修改）',
+        iconURL: ml2scratchIconURL,
+        insetIconURL: ml2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="用攝影機拍幾張照片教電腦認東西（最多 10 種），再讓角色依辨識結果做反應。學習資料只存在這台電腦，可以下載成檔案保存。"
+                description="Description of the image trainer extension"
+                id="gui.extension.ml2scratch.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: false,
+        bluetoothRequired: false
+    },
+    {
+        name: '語音辨識',
+        extensionId: 'campspeech',
+        collaborator: '營隊學習平台',
+        iconURL: campspeechIconURL,
+        insetIconURL: campspeechInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="對著麥克風說話，把聽到的話變成文字。需要連上網路：聲音會送到 Google 的語音服務辨識。請使用 Chrome 或 Edge。"
+                description="Description of the speech recognition extension"
+                id="gui.extension.campspeech.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false
+    },
+    {
+        name: 'Teachable Machine（影像、聲音）',
+        extensionId: 'tm2scratch',
+        collaborator: 'champierre（營隊學習平台修改）',
+        iconURL: tm2scratchIconURL,
+        insetIconURL: tm2scratchIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="把在 Teachable Machine 網站訓練好的圖片或聲音模型連結貼進來，讓角色依辨識結果做反應。需要連上網路下載模型。"
+                description="Description of the Teachable Machine image and sound extension"
+                id="gui.extension.tm2scratch.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false
+    },
+    {
+        name: 'Teachable Machine（姿態）',
+        extensionId: 'tmpose2scratch',
+        collaborator: 'champierre（營隊學習平台修改）',
+        iconURL: tmpose2scratchIconURL,
+        insetIconURL: tmpose2scratchIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="把在 Teachable Machine 網站訓練好的姿態模型連結貼進來，用身體動作控制角色。需要連上網路下載模型。"
+                description="Description of the Teachable Machine pose extension"
+                id="gui.extension.tmpose2scratch.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
         bluetoothRequired: false
     },
     {

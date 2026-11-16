@@ -3,8 +3,11 @@
  * @param {VirtualMachine} vm - The scratch vm
  * @returns {ScratchBlocks} ScratchBlocks connected with the vm
  */
+import registerCampMatrix8 from './camp-matrix8';
+
 export default function (vm) {
     const ScratchBlocks = require('scratch-blocks');
+    registerCampMatrix8(ScratchBlocks); // 營隊：Arduino 8×8 LED 矩陣欄位（2026-11）
 
     const jsonForMenuBlock = function (name, menuOptionsFn, category, start) {
         return {

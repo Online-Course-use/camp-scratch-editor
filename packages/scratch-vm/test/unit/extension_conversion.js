@@ -158,7 +158,8 @@ const testReporter = function (t, reporter) {
         }
     ]);
     t.notOk(Object.prototype.hasOwnProperty.call(reporter.json, 'args1'));
-    t.equal(reporter.xml, '<block type="test_reporter"></block>');
+    // 營隊修正（2026-11-10）：可勾選的回報積木在工具箱有固定 id（見 runtime.js）
+    t.equal(reporter.xml, '<block type="test_reporter" id="test_reporter"></block>');
 };
 
 const testInlineImage = function (t, inlineImage) {
@@ -182,7 +183,8 @@ const testInlineImage = function (t, inlineImage) {
         }
     ]);
     t.notOk(Object.prototype.hasOwnProperty.call(inlineImage.json, 'args1'));
-    t.equal(inlineImage.xml, '<block type="test_inlineImage"></block>');
+    // 營隊修正（2026-11-10）：可勾選的回報積木在工具箱有固定 id（見 runtime.js）
+    t.equal(inlineImage.xml, '<block type="test_inlineImage" id="test_inlineImage"></block>');
 };
 
 const testSeparator = function (t, separator) {

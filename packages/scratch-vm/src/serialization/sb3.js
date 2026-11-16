@@ -1352,6 +1352,13 @@ const deserializeMonitor = function (monitorData, runtime, targets, extensions) 
         monitorData.id = StringUtil.replaceUnsafeChars(monitorData.id);
     }
 
+    // 營隊修正（2026-11-10）：擴展的無參數回報積木，顯示器 id 一律用 opcode（與 runtime.js 工具箱的固定 id 一致）。
+    // 舊作品裡這類顯示器是隨機 id；改成 opcode 後，重複的會合併成一個，勾選框也能再控制它。
+    if (!monitorBlockInfo && getExtensionIdForOpcode(monitorData.opcode) &&
+        Object.keys(monitorData.params || {}).length === 0) {
+        monitorData.id = monitorData.opcode;
+    }
+
     // If the runtime already has a monitor block for this monitor's id,
     // update the existing block with the relevant monitor information.
     const existingMonitorBlock = runtime.monitorBlocks._blocks[monitorData.id];

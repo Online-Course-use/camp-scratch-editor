@@ -96,6 +96,13 @@ const ArgumentTypeMap = (() => {
             fieldName: 'MATRIX'
         }
     };
+    // 營隊新增（2026-11）：8×8 LED 矩陣，點選格子畫圖案（shadow 積木定義在 scratch-gui 的 lib/camp-matrix8.js）
+    map[ArgumentType.CAMP_MATRIX8] = {
+        shadow: {
+            type: 'camp_matrix8',
+            fieldName: 'MATRIX'
+        }
+    };
     map[ArgumentType.NOTE] = {
         shadow: {
             type: 'note',
@@ -1213,7 +1220,11 @@ class Runtime extends EventEmitter {
 
         const mutation = blockInfo.isDynamic ? `<mutation blockInfo="${xmlEscape(JSON.stringify(blockInfo))}"/>` : '';
         const inputs = context.inputList.join('');
-        const blockXML = `<block type="${extendedOpcode}">${mutation}${inputs}</block>`;
+        // 營隊修正（2026-11-10）：可以勾選顯示在舞台上的回報積木，在工具箱裡用 opcode 當固定的 id
+        // （與內建積木的工具箱做法相同，例如 id="motion_xposition"）。原本沒有 id，每次載入都是隨機的，
+        // 顯示器的 id 跟著變：重新整理後勾選會多出一個顯示器，舊的那個再也關不掉。
+        const monitorId = blockJSON.extensions.includes('monitor_block') ? ` id="${xmlEscape(extendedOpcode)}"` : '';
+        const blockXML = `<block type="${extendedOpcode}"${monitorId}>${mutation}${inputs}</block>`;
 
         return {
             info: context.blockInfo,

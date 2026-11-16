@@ -24,7 +24,17 @@ export default defineConfig(({ mode }) => {
   return {
     define: { __EDITOR_VERSION__: JSON.stringify(`${pkg.version}+scratch-gui.${guiPkg.version}`) },
     // 營隊網站在 3000，編輯器外殼在 5174，測試用的假網站（harness）在 5175。
-    server: { port: 5174, strictPort: true, headers },
+    // forwardConsole：Vite 8 在 AI 助理啟動的伺服器上會自動把瀏覽器的警告全部轉送回伺服器；
+    // 編輯器（scratch-blocks、TensorFlow.js）警告很多，曾讓伺服器卡在滿載、檔案傳很慢（2026-11-10），所以明確關閉。
+    // watch.ignored：public/ 裡是重建時整批複製的 scratch-gui 產物、素材庫、AI 模型與韌體（上萬個檔案），
+    // 不需要熱更新；不監看它們，避免每次重建後伺服器忙著處理檔案變動、傳檔變得很慢（2026-11-11）。
+    server: {
+      port: 5174,
+      strictPort: true,
+      headers,
+      forwardConsole: false,
+      watch: { ignored: ["**/public/**", "**/dist/**", "**/firmware/**"] },
+    },
     preview: { port: 5174, strictPort: true, headers },
     build: { chunkSizeWarningLimit: 1000 },
     test: { environment: "node", include: ["tests/**/*.test.ts"] },

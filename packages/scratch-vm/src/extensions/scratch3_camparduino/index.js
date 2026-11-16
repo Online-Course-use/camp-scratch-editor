@@ -1,13 +1,13 @@
 /* eslint-disable */
 // 營隊自己撰寫的程式，格式與註解風格不套用上游的 lint 規則（上游的規則是為官方程式碼訂的）。
 /**
- * 營隊 Arduino Uno 擴展：以 WebSerial 連線，使用 StandardFirmata 協定；可在網頁內燒錄 StandardFirmata。
+ * 營隊 Arduino Uno 擴展：以 WebSerial 連線，使用 Firmata 協定；可在網頁內燒錄營隊韌體 CampFirmata
+ * （StandardFirmata 2.5.9 加上自訂指令，見 packages/camp-host/firmware/）。更多零件的積木在 parts.js。
  * 營隊自行撰寫（AGPL-3.0）。規格見營隊平台 SPEC 7.5、7.7.7。
  *
  * 設計重點：
  * - 連線與燒錄都必須由使用者點擊積木觸發（瀏覽器要求手勢才能開連接埠選擇視窗），不能在綠旗時自動執行。
  * - 板子拔掉、通訊失敗時：回報「未連線」並停止程式，**不得讓編輯器當掉**；積木在未連線時一律安全地什麼都不做。
- * - StandardFirmata 沒有音調（tone）功能，所以沒有「蜂鳴器播放音調」積木；只有主動式蜂鳴器的開／關。
  */
 const ArgumentType = require('../../extension-support/argument-type');
 const BlockType = require('../../extension-support/block-type');
@@ -16,11 +16,24 @@ const {MODE, ANALOG_PIN_OFFSET, encode, FirmataParser} = require('./firmata');
 const stk500 = require('./stk500');
 const SerialLink = require('./serial');
 const ui = require('./ui');
+const parts = require('./parts');
 
 const FIRMATA_BAUD = 57600;
 const BOOTLOADER_BAUD = 115200;
-const FIRMWARE_URL = '/firmware/StandardFirmata-2.5.9-uno.hex';
-const FIRMWARE_VERSION_TEXT = 'StandardFirmata 2.5.9';
+// 營隊韌體：StandardFirmata 2.5.9 加上營隊的自訂指令（原始碼在 packages/camp-host/firmware/）
+const FIRMWARE_URL = '/firmware/CampFirmata-1.1.0-uno.hex';
+const FIRMWARE_VERSION_TEXT = 'CampFirmata 1.1';
+// 板子上的營隊韌體低於這個版本就提示更新（1.0 回報的名稱是「CampFirmata.ino 2.5」，沒有自己的版號）
+const FIRMWARE_MIN = [1, 1];
+
+/** 韌體名稱是營隊韌體但版本太舊。不是營隊韌體（例如 StandardFirmata）時回傳 false，由用到的積木提示。 */
+const campFirmwareOutdated = firmware => {
+    if (!/CampFirmata/i.test(firmware)) return false;
+    const m = /^CampFirmata (\d+)\.(\d+)$/.exec(firmware);
+    if (!m) return true;
+    const [major, minor] = [Number(m[1]), Number(m[2])];
+    return major < FIRMWARE_MIN[0] || (major === FIRMWARE_MIN[0] && minor < FIRMWARE_MIN[1]);
+};
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -41,7 +54,7 @@ const COLORS = {
 /** 伺服馬達每轉 1 度等待的毫秒數。 */
 const SWEEP_MS_PER_DEGREE = {slow: 25, medium: 10, fast: 4};
 
-const pinItems = pins => pins.map(p => ({text: String(p), value: String(p)}));
+const pinItems = pins => pins.map(p => ({text: parts.pinLabel(p), value: String(p)}));
 
 class Scratch3CampArduinoBlocks {
     constructor (runtime) {
@@ -71,11 +84,19 @@ class Scratch3CampArduinoBlocks {
             },
             onAnalog: (channel, value) => {
                 if (channel < this.analog.length) this.analog[channel] = value;
-            }
+            },
+            ...parts.partHandlers(this)
         });
+        parts.initParts(this);
         if (runtime && runtime.on) {
             runtime.on('PROJECT_STOP_ALL', () => {
                 this.epoch++;
+                // 按停止時讓一直響的蜂鳴器停下來
+                if (this.connected && this.tonePin !== undefined && this.tonePin !== null) {
+                    this._send(parts.encodeToneStop(this.tonePin));
+                    this.pinModes.delete(this.tonePin);
+                    this.tonePin = null;
+                }
             });
         }
     }
@@ -99,6 +120,7 @@ class Scratch3CampArduinoBlocks {
                 // ---- 基本輸出入 ----
                 {
                     opcode: 'pinMode',
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND,
                     text: '腳位 [PIN] 模式設為 [MODE]',
                     arguments: {PIN: pin('digitalPins', 13), MODE: {type: ArgumentType.STRING, menu: 'modes', defaultValue: 'output'}}
@@ -129,6 +151,7 @@ class Scratch3CampArduinoBlocks {
                 },
                 {
                     opcode: 'readAuto',
+                    hideFromPalette: true,
                     blockType: BlockType.REPORTER,
                     text: '讀取腳位 [PIN]（自動判斷）',
                     arguments: {PIN: pin('anyPins', 2)}
@@ -147,16 +170,18 @@ class Scratch3CampArduinoBlocks {
                 },
                 '---',
                 // ---- 常用零件 ----
-                {opcode: 'ledOn', blockType: BlockType.COMMAND, text: '點亮 LED（腳位 [PIN]）', arguments: {PIN: pin('digitalPins', 13)}},
-                {opcode: 'ledOff', blockType: BlockType.COMMAND, text: '熄滅 LED（腳位 [PIN]）', arguments: {PIN: pin('digitalPins', 13)}},
+                {opcode: 'ledOn', hideFromPalette: true, blockType: BlockType.COMMAND, text: '點亮 LED（腳位 [PIN]）', arguments: {PIN: pin('digitalPins', 13)}},
+                {opcode: 'ledOff', hideFromPalette: true, blockType: BlockType.COMMAND, text: '熄滅 LED（腳位 [PIN]）', arguments: {PIN: pin('digitalPins', 13)}},
                 {
                     opcode: 'ledBlink',
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND,
                     text: 'LED（腳位 [PIN]）閃爍 [TIMES] 次，亮 [ON] 毫秒 滅 [OFF] 毫秒',
                     arguments: {PIN: pin('digitalPins', 13), TIMES: num(3), ON: num(300), OFF: num(300)}
                 },
                 {
                     opcode: 'buzzerBeep',
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND,
                     text: '蜂鳴器（腳位 [PIN]）響 [MS] 毫秒',
                     arguments: {PIN: pin('digitalPins', 8), MS: num(500)}
@@ -169,6 +194,7 @@ class Scratch3CampArduinoBlocks {
                 },
                 {
                     opcode: 'servoSweep',
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND,
                     text: '伺服馬達（腳位 [PIN]）從 [FROM] 度轉到 [TO] 度，速度 [SPEED]',
                     arguments: {
@@ -180,6 +206,7 @@ class Scratch3CampArduinoBlocks {
                 },
                 {
                     opcode: 'rgbSet',
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND,
                     text: 'RGB LED（紅 [R] 綠 [G] 藍 [B]）設為 [COLOR]',
                     arguments: {
@@ -206,6 +233,7 @@ class Scratch3CampArduinoBlocks {
                     text: '直流馬達（方向腳 [DIR] 速度腳 [PWM]）停止',
                     arguments: {DIR: pin('digitalPins', 4), PWM: pin('pwmPins', 5)}
                 },
+                ...parts.partBlocks({pin, num, text: def => ({type: ArgumentType.STRING, defaultValue: def})}),
                 '---',
                 // ---- 感測輔助 ----
                 {
@@ -225,7 +253,8 @@ class Scratch3CampArduinoBlocks {
                     blockType: BlockType.REPORTER,
                     text: '把 [VALUE] 從 [IN_MIN]–[IN_MAX] 對應到 [OUT_MIN]–[OUT_MAX]',
                     arguments: {VALUE: num(512), IN_MIN: num(0), IN_MAX: num(1023), OUT_MIN: num(0), OUT_MAX: num(255)}
-                }
+                },
+                ...parts.mathBlocks({num, text: def => ({type: ArgumentType.STRING, defaultValue: def})})
             ],
             menus: {
                 digitalPins: {acceptReporters: true, items: pinItems(DIGITAL_PINS)},
@@ -249,7 +278,8 @@ class Scratch3CampArduinoBlocks {
                         {text: '白', value: 'white'}, {text: '關閉', value: 'off'}
                     ]
                 },
-                directions: {acceptReporters: false, items: [{text: '正轉', value: 'forward'}, {text: '反轉', value: 'backward'}]}
+                directions: {acceptReporters: false, items: [{text: '正轉', value: 'forward'}, {text: '反轉', value: 'backward'}]},
+                ...parts.PART_MENUS
             }
         };
     }
@@ -269,7 +299,11 @@ class Scratch3CampArduinoBlocks {
             const link = new SerialLink();
             await link.request(); // 必須最先做：需要使用者手勢
             await this._openFirmata(link);
-            ui.show(`已連接 Arduino（${this.firmware || `Firmata ${this.version}`}）`, {kind: 'ok', autoHideMs: 2500});
+            if (campFirmwareOutdated(this.firmware)) {
+                ui.show('已連接 Arduino，但板子上的營隊韌體是舊版。\n請點「燒錄 Firmata 韌體」更新一次（約 30 秒）', {kind: 'error'});
+            } else {
+                ui.show(`已連接 Arduino（${this.firmware || `Firmata ${this.version}`}）`, {kind: 'ok', autoHideMs: 2500});
+            }
         } catch (e) {
             this._reportError(e, '連接');
         } finally {
@@ -336,6 +370,8 @@ class Scratch3CampArduinoBlocks {
         this.pinValues.clear();
         this.analogReporting.clear();
         this.servoPins.clear();
+        this.tonePin = null;
+        this._resetParts();
         this.parser = new FirmataParser(this.parser.handlers);
     }
 
@@ -404,7 +440,7 @@ class Scratch3CampArduinoBlocks {
             ui.show('正在讀取韌體檔…');
             const image = await this._loadFirmware();
             const ok = typeof window === 'undefined' ||
-                window.confirm('這會覆蓋板子上現有的程式，燒錄成 Firmata 韌體。\n要繼續嗎？');
+                window.confirm('這會覆蓋板子上現有的程式，燒錄成營隊的 Firmata 韌體。\n要繼續嗎？');
             if (!ok) {
                 ui.hide();
                 this.status = '未連線（已取消燒錄）';
@@ -703,4 +739,7 @@ class Scratch3CampArduinoBlocks {
     }
 }
 
+Object.assign(Scratch3CampArduinoBlocks.prototype, parts.PartMethods);
+
 module.exports = Scratch3CampArduinoBlocks;
+module.exports.campFirmwareOutdated = campFirmwareOutdated;

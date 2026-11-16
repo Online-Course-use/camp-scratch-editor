@@ -34,6 +34,11 @@ const ArgumentType = {
     MATRIX: 'matrix',
 
     /**
+     * 8x8 LED matrix field (64 '0'/'1' chars, row by row). Camp addition (2026-11).
+     */
+    CAMP_MATRIX8: 'campMatrix8',
+
+    /**
      * MIDI note number with note picker (piano) field
      */
     NOTE: 'note',

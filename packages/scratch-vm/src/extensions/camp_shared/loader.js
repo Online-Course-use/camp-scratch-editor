@@ -19,7 +19,8 @@ const MODEL_ROUTES = [
     ['https://tfhub.dev/tensorflow/tfjs-model/blazeface/1/default/1/', '/models/blazeface/'],
     ['https://tfhub.dev/mediapipe/tfjs-model/handdetector/1/default/1/', '/models/handdetector/'],
     ['https://tfhub.dev/mediapipe/tfjs-model/handskeleton/1/default/1/', '/models/handskeleton/'],
-    ['https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/quant2/075/', '/models/posenet/']
+    ['https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/quant2/075/', '/models/posenet/'],
+    ['https://storage.googleapis.com/tfjs-models/savedmodel/posenet/mobilenet/float/075/', '/models/posenet-float/']
 ];
 
 /**
@@ -60,17 +61,21 @@ async function withLocalModels (scope, fn) {
     }
 }
 
-/** 每個 window 進行中的載入（避免同時插入兩個 <script>）。 */
+/** 每個 window、每個網址進行中的載入（避免同時插入兩個相同的 <script>）。 */
 const loading = new WeakMap();
 
 /**
- * 載入 ml5（只載入一次；失敗可以重試）。
- * @param {object} [scope] - 瀏覽器的 window
- * @returns {Promise<object>} ml5
+ * 從本網域載入一個函式庫（只載入一次；失敗可以重試）。
+ * @param {object} scope - 瀏覽器的 window
+ * @param {string} url - 本網域的網址
+ * @param {string} globalName - 函式庫載入後會出現的全域名稱
+ * @returns {Promise<object>} 函式庫
  */
-function loadMl5 (scope = globalThis) {
-    if (scope.ml5) return Promise.resolve(scope.ml5);
-    if (loading.has(scope)) return loading.get(scope);
+function loadScript (scope, url, globalName) {
+    if (scope[globalName]) return Promise.resolve(scope[globalName]);
+    if (!loading.has(scope)) loading.set(scope, new Map());
+    const pending = loading.get(scope);
+    if (pending.has(url)) return pending.get(url);
     const promise = new Promise((resolve, reject) => {
         const doc = scope.document;
         if (!doc) {
@@ -78,20 +83,35 @@ function loadMl5 (scope = globalThis) {
             return;
         }
         const script = doc.createElement('script');
-        script.src = ML5_URL;
+        script.src = url;
         script.async = true;
-        script.onload = () => (scope.ml5 ? resolve(scope.ml5) : reject(new Error('函式庫載入後沒有啟動')));
+        script.onload = () => (scope[globalName] ? resolve(scope[globalName]) : reject(new Error('函式庫載入後沒有啟動')));
         script.onerror = () => {
             script.remove();
             reject(new Error('函式庫下載失敗'));
         };
         doc.head.appendChild(script);
-    }).catch(err => {
-        loading.delete(scope);
-        throw err;
-    });
-    loading.set(scope, promise);
+    }).finally(() => pending.delete(url));
+    pending.set(url, promise);
     return promise;
 }
 
-module.exports = {ML5_URL, MODEL_ROUTES, localModelUrl, withLocalModels, loadMl5};
+/** 載入 ml5（臉部、手部、姿態、影像訓練器、Teachable Machine 影像與聲音）。 */
+function loadMl5 (scope = globalThis) {
+    return loadScript(scope, ML5_URL, 'ml5');
+}
+
+const TFJS_URL = '/vendor/tfjs-1.3.1.min.js';
+const TM_POSE_URL = '/vendor/teachablemachine-pose-0.8.6.min.js';
+
+/**
+ * 載入 Teachable Machine 姿態函式庫（需要先有全域的 TensorFlow.js 1.3.1）。
+ * @param {object} scope - 瀏覽器的 window
+ * @returns {Promise<object>} tmPose
+ */
+async function loadTmPose (scope = globalThis) {
+    await loadScript(scope, TFJS_URL, 'tf');
+    return loadScript(scope, TM_POSE_URL, 'tmPose');
+}
+
+module.exports = {ML5_URL, TFJS_URL, TM_POSE_URL, MODEL_ROUTES, localModelUrl, withLocalModels, loadScript, loadMl5, loadTmPose};
