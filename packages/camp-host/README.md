@@ -58,7 +58,7 @@ npm test                     # 協定、bridge、權杖的單元測試
 
 ## 安全標頭
 
-見 `vercel.json`（正式）與 `vite.config.ts`（本機，同一份政策）：`frame-ancestors` 只允許營隊網站；`connect-src` 只有本網域加 `storage.googleapis.com`、`teachablemachine.withgoogle.com` 兩個外部網域（Teachable Machine）；`Permissions-Policy` 不封鎖鏡頭、麥克風、序列埠。
+見 `vercel.json`（正式）與 `vite.config.ts`（本機，同一份政策）：`frame-ancestors` 只允許營隊網站；`connect-src` 只有本網域加三個外部網域：`storage.googleapis.com`、`teachablemachine.withgoogle.com`（Teachable Machine），以及 `synthesis-service.scratch.mit.edu`（官方「文字轉語音」擴展）。官方「翻譯」擴展在我們的網域無法使用：Scratch 的翻譯伺服器只接受來自 `scratch.mit.edu` 的請求（CORS），開放 `connect-src` 也沒用；`Permissions-Policy` 不封鎖鏡頭、麥克風、序列埠。
 
 ## Arduino 韌體
 

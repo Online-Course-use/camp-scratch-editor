@@ -7,10 +7,15 @@ import guiPkg from "../scratch-gui/package.json" with { type: "json" };
  * 營隊部署的安全標頭（SPEC 8.4）。本機開發與 vercel.json 用**同一份政策**（本機多允許 ws: 給 Vite 熱更新），
  * 才能在本機就驗證到「被別的網站嵌入時無法運作」與「模型載入被 CSP 擋住」。
  *
- * connect-src 只有兩個外部網域，**不開萬用字元**：Teachable Machine 的模型與函式庫。
+ * connect-src 只列三個外部網域，**不開萬用字元**：
+ * - Teachable Machine 的模型與函式庫（storage.googleapis.com、teachablemachine.withgoogle.com）
+ * - 官方「文字轉語音」擴展的 Scratch 伺服器（synthesis-service；2026-11-16 PM 決定開放）
+ * 官方「翻譯」擴展**沒有**列進來：Scratch 的翻譯伺服器只接受來自 scratch.mit.edu 的請求（CORS），
+ * 就算這裡開放也連不上（2026-11-17 實測），所以不開一個沒有作用的洞。
  * 其餘 AI 模型一律由本網域自架（`/models/…`），所以不需要連外。
+ * 改這裡時 vercel.json 要一起改（tests/headers.test.ts 會檢查兩邊一致）。
  */
-export const CAMP_CONNECT_SRC = "'self' blob: data: https://storage.googleapis.com https://teachablemachine.withgoogle.com";
+export const CAMP_CONNECT_SRC = "'self' blob: data: https://storage.googleapis.com https://teachablemachine.withgoogle.com https://synthesis-service.scratch.mit.edu";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
