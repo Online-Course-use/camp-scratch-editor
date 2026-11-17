@@ -12,3 +12,6 @@ public/extension-worker.js*
 harness/.env.local
 public/models/
 public/vendor/
+
+.vercel
+.env*.local

@@ -56,6 +56,22 @@ npm test                     # 協定、bridge、權杖的單元測試
 | `VITE_ALLOWED_ORIGINS` | 允許嵌入本編輯器的來源（逗號分隔）；同時決定 CSP 的 `frame-ancestors` |
 | `VITE_SOURCE_URL` | 本倉庫的公開網址，顯示在編輯器右下角（AGPL 義務：向使用者提供原始碼） |
 
+## 部署到 Vercel（專案 `camp-editor`）
+
+Vercel **不建置**這個專案（scratch-gui 太重，模型與素材庫不進版控），只上傳本機建好的 `dist/`：
+
+```bash
+# 在 packages/camp-host；正式設定讀 .env.production（值都可公開）
+npm run build                      # 改過 vm／gui 要先重建它們
+node scripts/prepare-deploy.mjs    # 把 vercel.json（安全標頭）與專案連結放進 dist/
+npx vercel deploy dist --prod      # 第一次傳全部（約 190 MB），之後只傳有變動的檔案
+```
+
+- 第一次在新電腦：`npx vercel login`，再 `npx vercel link --project camp-editor`。
+- 不要用 `vercel build`／`--prebuilt`：在 Windows 要建立符號連結，沒有系統管理員權限會失敗（EPERM）。
+- 電腦名稱含中文時 Vercel CLI 會崩潰（`Cannot convert argument to a ByteString`）：CLI 把電腦名稱放進 HTTP 標頭。用 `NODE_OPTIONS=--require <一支把 os.hostname 換成英文的 .cjs>` 繞過。
+- 每次上線後把同一個提交推到 GitHub（AGPL：公開的原始碼要和線上版本一致）。
+
 ## 安全標頭
 
 見 `vercel.json`（正式）與 `vite.config.ts`（本機，同一份政策）：`frame-ancestors` 只允許營隊網站；`connect-src` 只有本網域加三個外部網域：`storage.googleapis.com`、`teachablemachine.withgoogle.com`（Teachable Machine），以及 `synthesis-service.scratch.mit.edu`（官方「文字轉語音」擴展）。官方「翻譯」擴展在我們的網域無法使用：Scratch 的翻譯伺服器只接受來自 `scratch.mit.edu` 的請求（CORS），開放 `connect-src` 也沒用；`Permissions-Policy` 不封鎖鏡頭、麥克風、序列埠。
